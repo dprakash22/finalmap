@@ -4,6 +4,15 @@
 		Nominatim = dereq('./geocoders/nominatim')["class"];
 	
 		var myresult=""
+
+		var locations = [
+			{ name: "Location 1", icon: "icon1.png", lat: 40.7128, lon: -74.0060 },
+			{ name: "Location 2", icon: "icon2.png", lat: 34.0522, lon: -118.2437 },
+			{ name: "Location 3", icon: "icon3.png", lat: 51.5074, lon: -0.1278 },
+			{ name: "Location 4", icon: "icon4.png", lat: 35.6895, lon: 139.6917 },
+			{ name: "Location 5", icon: "icon5.png", lat: 48.8566, lon: 2.3522 }
+		];
+		
 	
 	module.exports = {
 		"class": L.Control.extend({
@@ -165,6 +174,8 @@
 	
 			_geocode: function(suggest) {
 				console.log("this my value",myresult)
+				var results = locations;
+				this._geocodeResult(results, suggest);
 				var requestCount = ++this._requestCount,
 					mode = suggest ? 'suggest' : 'geocode',
 					eventData = {input: this._input.value};
@@ -186,9 +197,24 @@
 				}, this);
 			},
 	
+			// _geocodeResultSelected: function(result) {
+			// 	this.fire('markgeocode', {geocode: result});
+			// },
+
 			_geocodeResultSelected: function(result) {
-				this.fire('markgeocode', {geocode: result});
+				this.fire('markgeocode', { geocode: result });
+				this._map.setView([result.lat, result.lon], 13);
+			
+				if (this._geocodeMarker) {
+					this._map.removeLayer(this._geocodeMarker);
+				}
+			
+				this._geocodeMarker = L.marker([result.lat, result.lon])
+					.bindPopup(result.name)
+					.addTo(this._map)
+					.openPopup();
 			},
+			
 	
 			_toggle: function() {
 				if (L.DomUtil.hasClass(this._container, 'leaflet-control-geocoder-expanded')) {
@@ -239,13 +265,14 @@
 								this._clearResults();
 							}
 						}, this);
-					};
+					}.bind(this);
 	
 				if (icon) {
 					icon.src = result.icon;
 				}
 	
 				li.setAttribute('data-result-index', index);
+				a.appendChild(text);
 	
 				if (result.html) {
 					a.innerHTML = a.innerHTML + result.html;
