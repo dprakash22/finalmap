@@ -4,14 +4,6 @@
 		Nominatim = dereq('./geocoders/nominatim')["class"];
 	
 		var myresult=""
-
-		var locations = [
-			{ name: "Trichy", icon: "icon_trichy.png", lat: 10.7905, lon: 78.7047 },
-			{ name: "Coimbatore", icon: "icon_coimbatore.png", lat: 11.0168, lon: 76.9558 },
-			{ name: "Madurai", icon: "icon_madurai.png", lat: 9.9252, lon: 78.1198 },
-			{ name: "Pudukkottai", icon: "icon_pudukkottai.png", lat: 10.3793, lon: 78.8208 },
-			{ name: "Erode", icon: "icon_erode.png", lat: 11.3410, lon: 77.7172 }
-		];
 		
 	
 	module.exports = {
@@ -44,9 +36,9 @@
 	
 			findseacrh: function(){
 				const url=window.location.href
-				const place=url.split("https://dprakash22.github.io/finalmap/")[1].split("#")[0].split("=")[1]
+				// const place=url.split("https://dprakash22.github.io/finalmap/")[1].split("#")[0].split("=")[1]
 				// const place=url.split("http://localhost:8001/")[1].split("#")[0].split("=")[1]
-				myresult=place
+				myresult="coimbatore"
 				this._geocode()
 			},
 	
@@ -174,8 +166,6 @@
 	
 			_geocode: function(suggest) {
 				console.log("this my value",myresult)
-				var results = locations;
-				this._geocodeResult(results, suggest);
 				var requestCount = ++this._requestCount,
 					mode = suggest ? 'suggest' : 'geocode',
 					eventData = {input: this._input.value};
@@ -197,24 +187,9 @@
 				}, this);
 			},
 	
-			// _geocodeResultSelected: function(result) {
-			// 	this.fire('markgeocode', {geocode: result});
-			// },
-
 			_geocodeResultSelected: function(result) {
-				this.fire('markgeocode', { geocode: result });
-				this._map.setView([result.lat, result.lon], 13);
-			
-				if (this._geocodeMarker) {
-					this._map.removeLayer(this._geocodeMarker);
-				}
-			
-				this._geocodeMarker = L.marker([result.lat, result.lon])
-					.bindPopup(result.name)
-					.addTo(this._map)
-					.openPopup();
+				this.fire('markgeocode', {geocode: result});
 			},
-			
 	
 			_toggle: function() {
 				if (L.DomUtil.hasClass(this._container, 'leaflet-control-geocoder-expanded')) {
@@ -265,14 +240,13 @@
 								this._clearResults();
 							}
 						}, this);
-					}.bind(this);
+					};
 	
 				if (icon) {
 					icon.src = result.icon;
 				}
 	
 				li.setAttribute('data-result-index', index);
-				a.appendChild(text);
 	
 				if (result.html) {
 					a.innerHTML = a.innerHTML + result.html;
