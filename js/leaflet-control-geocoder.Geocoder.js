@@ -6,11 +6,11 @@
 		var myresult=""
 
 		var locations = [
-			{ name: "Location 1", icon: "icon1.png", lat: 40.7128, lon: -74.0060 },
-			{ name: "Location 2", icon: "icon2.png", lat: 34.0522, lon: -118.2437 },
-			{ name: "Location 3", icon: "icon3.png", lat: 51.5074, lon: -0.1278 },
-			{ name: "Location 4", icon: "icon4.png", lat: 35.6895, lon: 139.6917 },
-			{ name: "Location 5", icon: "icon5.png", lat: 48.8566, lon: 2.3522 }
+			{ name: "Trichy", icon: "icon_trichy.png", lat: 10.7905, lon: 78.7047 },
+			{ name: "Coimbatore", icon: "icon_coimbatore.png", lat: 11.0168, lon: 76.9558 },
+			{ name: "Madurai", icon: "icon_madurai.png", lat: 9.9252, lon: 78.1198 },
+			{ name: "Pudukkottai", icon: "icon_pudukkottai.png", lat: 10.3793, lon: 78.8208 },
+			{ name: "Erode", icon: "icon_erode.png", lat: 11.3410, lon: 77.7172 }
 		];
 		
 	

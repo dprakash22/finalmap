@@ -80,6 +80,9 @@
         }
         map.createPane('pane_OSMStandard_0');
         map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var geocoder = new L.Control.Geocoder.factory({
+            showResultIcons: true
+        }).addTo(map);
         var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             pane: 'pane_OSMStandard_0',
             opacity: 1.0,
