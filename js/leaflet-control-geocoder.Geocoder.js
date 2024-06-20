@@ -4,7 +4,7 @@
 		Nominatim = dereq('./geocoders/nominatim')["class"];
 	
 		var myresult=""
-		//___________________________________________________________________________________________________________________________
+
 		function createCustomIcon(imageUrl) {
             return new L.Icon({
                 iconUrl: imageUrl,
@@ -14,33 +14,43 @@
             });
         }
 
-		var color5=1, color2=1, color4=1;
+		var colors = {
+            "color5": 1,
+            "color2": 1,
+            "color4": 1
+        }
 
-		setInterval(async()=>{
-			const res = await fetch("http://localhost:5000/user/sensorqgis")
-			datas = await res.json()
-			for (let data in datas){
-				if (data == 5){
-					color5=datas[data];
-				}
-				else if (data == 2){
-					color2=datas[data];
-				}
-				else if (data == 4){
-					color4=datas[data];
-				}
-			}
-		},30000)
+		console.log(colors,"start")
 
-		
-
-        // Coordinates and names of the places with custom icon URLs
-        var places = [
-            { name: color5===1 ? 'LoRa-Active' : 'LoRa-Failed', lat: 13.045870186642654, lng: 80.19507229655638, icon : color5==1 ? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' : 'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
-			{ name: color2===1 ? 'LoRa-Active' : 'LoRa-Failed', lat: 13.11342152384103, lng: 80.10902922454527, icon : color2==1 ? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' : 'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
-			{ name: color4===1 ? 'LoRa-Active' : 'LoRa-Failed', lat: 13.25026628555937, lng: 80.27500977654219, icon : color4==1 ? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' : 'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
+		 // Coordinates and names of the places with custom icon URLs
+		 var places = [
+			{ name: '5LoRa-Active', lat: 13.045870186642654, lng: 80.19507229655638, icon: 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
+			{ name: '2LoRa-Active', lat: 13.11342152384103, lng: 80.10902922454527, icon: 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
+			{ name: '4LoRa-Active', lat: 13.201154377410116, lng: 80.18381346464102, icon: 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
         ];
 
+
+		setInterval(async () => {
+            try {
+                const res = await fetch("http://localhost:5000/user/sensorqgis");
+                const datas = await res.json();
+                console.log(datas, "this my datas");
+
+                Object.entries(datas["data"]).forEach(([key, value]) => {
+                    colors[`color${key}`] = value;
+                });
+
+                console.log(colors,"loop");
+                // updatePlaces(); // Update places based on the new colors
+				places.forEach(function(place) {
+					addMarker(place.lat, place.lng,colors[`color${place.name[0]}`]==1? `${place.name[0]}lora-Active` : `${place.name[0]}lora-Failed`, colors[`color${place.name[0]}`]==1? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid':'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' );
+				})
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }, 30000);
+
+       
         // Function to add a marker to the map with a custom icon
         function addMarker(lat, lng, name, iconUrl) {
             var customIcon = createCustomIcon(iconUrl);
@@ -48,8 +58,8 @@
                 .bindPopup(name)
                 .openPopup();
         }
-		//________________________________________________________________________________________________________________________
-		
+
+
 	
 	module.exports = {
 		"class": L.Control.extend({
@@ -81,11 +91,12 @@
 	
 			findseacrh: function(){
 				const url=window.location.href
-				// const place=url.split("https://dprakash22.github.io/finalmap/")[1].split("#")[0].split("=")[1]
-				// const place=url.split("http://localhost:8001/")[1].split("#")[0].split("=")[1]
-				myresult="chennai"
+				const place=url.split("https://dprakash22.github.io/finalmap/")[1].split("#")[0].split("=")[1]
+				myresult=place
 				this._geocode()
 			},
+
+			
 	
 			onAdd: function (map) {
 				var className = 'leaflet-control-geocoder',
@@ -94,7 +105,7 @@
 					form = this._form = L.DomUtil.create('div', className + '-form', container),
 					input;
 	
-				this._map = map;
+				this._map = map;	
 				this._container = container;
 	
 				icon.innerHTML = '&nbsp;';
@@ -126,12 +137,10 @@
 	
 				//mysearch function call
 				this.findseacrh()
-				places.forEach(function(place) {
-					addMarker(place.lat, place.lng, place.name, place.icon);
-				});
-
-
-
+				// places.forEach(function(place) {
+				// 	addMarker(place.lat, place.lng,colors[`color${place.name[0]}`]==1? `${place.name[0]}lora-Active` : `${place.name[0]}lora-Failed`, colors[`color${place.name[0]}`]==1? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid':'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' );
+				// })
+	
 				if (this.options.collapsed) {
 					if (this.options.expand === 'click') {
 						L.DomEvent.addListener(container, 'click', function(e) {
