@@ -14,14 +14,31 @@
             });
         }
 
-		var color=0
+		var color5=1, color2=1, color4=1;
+
+		setInterval(async()=>{
+			const res = await fetch("http://localhost:5000/user/sensorqgis")
+			datas = await res.json()
+			for (let data in datas){
+				if (data == 5){
+					color5=datas[data];
+				}
+				else if (data == 2){
+					color2=datas[data];
+				}
+				else if (data == 4){
+					color4=datas[data];
+				}
+			}
+		},30000)
+
+		
 
         // Coordinates and names of the places with custom icon URLs
         var places = [
-            { name: 'LoRa-failed', lat: 10.7905, lng: 78.7047, icon: color===1 ? '../legend/greenpin.png' : '../legend/redmark.png' }, // Red marker
-            { name: 'LoRa', lat: 10.3793, lng: 78.8200, icon: 'https://img.freepik.com/free-vector/location_53876-25530.jpg?t=st=1718692978~exp=1718696578~hmac=5f56b910583c59a717f39a3f2b32ae2df4af50698467c602f910707341596abf&w=740' }, // Green marker
-            { name: 'LoRa', lat: 15.2993, lng: 74.1240, icon: '../legend/greenpin.png' }, // Blue marker
-            { name: 'LoRa', lat: 11.3410, lng: 77.7172, icon: '../legend/greenpin.png' } // Yellow marker
+            { name: color5===1 ? 'LoRa-Active' : 'LoRa-Failed', lat: 13.045870186642654, lng: 80.19507229655638, icon : color1==1 ? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' : 'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
+			{ name: color2===1 ? 'LoRa-Active' : 'LoRa-Failed', lat: 13.11342152384103, lng: 80.10902922454527, icon : color2==1 ? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' : 'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
+			{ name: color4===1 ? 'LoRa-Active' : 'LoRa-Failed', lat: 13.25026628555937, lng: 80.27500977654219, icon : color4==1 ? 'https://cdn-icons-png.freepik.com/256/15092/15092032.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' : 'https://cdn-icons-png.freepik.com/256/7506/7506897.png?ga=GA1.1.1798749253.1718557894&semt=ais_hybrid' },
         ];
 
         // Function to add a marker to the map with a custom icon
@@ -66,7 +83,7 @@
 				const url=window.location.href
 				// const place=url.split("https://dprakash22.github.io/finalmap/")[1].split("#")[0].split("=")[1]
 				// const place=url.split("http://localhost:8001/")[1].split("#")[0].split("=")[1]
-				myresult="coimbatore"
+				myresult="chennai"
 				this._geocode()
 			},
 	
